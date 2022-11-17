@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,8 +36,23 @@ class UserRestControllerTest {
 
 
     @Test
+    void 아이디_단건_조회() throws Exception {
+        Long id = 10L;
+        given(userService.findById(id)).willReturn(UserResDto.builder()
+                .id(id)
+                .username("homidle")
+                .build());
+
+        String url = String.format("/api/v1/articles/%d", id);
+        mockMvc.perform(get(url))
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.username").value("homidle"))
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("회원가입 중복 테스트")
-    void addandDuplicate() throws Exception {
+    void addAndDuplicate() throws Exception {
         UserReqDto userReqDto = new UserReqDto("jin", "1234");
 
         given(userService.add(any(UserReqDto.class))).willReturn(new UserResDto(userReqDto.getUsername(), "해당 username은 중복입니다."));
