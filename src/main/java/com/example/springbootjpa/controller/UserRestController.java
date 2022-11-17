@@ -6,10 +6,7 @@ import com.example.springbootjpa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/articles")
@@ -19,9 +16,16 @@ public class UserRestController {
 
     private final UserService userService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResDto> findById(@PathVariable Long id) {
+        log.info("restController findById. id={}", id);
+        UserResDto response = userService.findById(id);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping("")
     public ResponseEntity<UserResDto> add(@RequestBody UserReqDto userReqDto) {
-        log.info("저장 메서드. name={}", userReqDto.getUsername());
+        log.info("restController add. name={}", userReqDto.getUsername());
         UserResDto response = userService.add(userReqDto);
         return ResponseEntity.ok().body(response);
     }

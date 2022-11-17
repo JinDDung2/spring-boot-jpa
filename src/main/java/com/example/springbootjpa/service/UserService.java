@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,17 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public UserResDto findById(Long id) {
+        Optional<User> findUser = userRepository.findById(id);
+        if (findUser.isEmpty()) {
+            return new UserResDto(id, "", "해당 id 저가 없습니다.");
+        } else {
+            User user = findUser.get();
+            UserResDto response = UserResDto.from(user);
+            return response;
+        }
+    }
 
     public UserResDto add(@RequestBody UserReqDto userReqDto) {
         log.info("회원가입 실행. username={}", userReqDto.getUsername());
