@@ -1,5 +1,6 @@
 package com.example.springbootjpa.domain.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ public class User {
     private String username;
     private String password;
 
+    @Builder
     public User(Long id, String username, String password) {
         this.id = id;
         this.username = username;
