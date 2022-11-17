@@ -21,7 +21,7 @@ public class UserRestController {
 
     @PostMapping("")
     public ResponseEntity<UserResDto> add(@RequestBody UserReqDto userReqDto) {
-        log.info("저장 메서드. name={}", userReqDto);
+        log.info("저장 메서드. name={}", userReqDto.getUsername());
         UserResDto response = userService.add(userReqDto);
         return ResponseEntity.ok().body(response);
     }
