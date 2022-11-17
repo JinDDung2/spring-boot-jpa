@@ -1,19 +1,21 @@
 package com.example.springbootjpa.domain.dto;
 
 import com.example.springbootjpa.domain.entity.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter @Setter
 @NoArgsConstructor
 public class UserResDto {
 
+    private Long id;
     private String username;
     private String message;
 
-    public UserResDto(String username) {
+    @Builder
+    public UserResDto(Long id, String username, String message) {
+        this.id = id;
         this.username = username;
+        this.message = message;
     }
 
     public UserResDto(String username, String message) {
@@ -23,6 +25,6 @@ public class UserResDto {
 
     /*Entity --> response*/
     public static UserResDto from(User user) {
-        return new UserResDto(user.getUsername());
+        return new UserResDto(user.getUsername(), user.getUsername());
     }
 }
