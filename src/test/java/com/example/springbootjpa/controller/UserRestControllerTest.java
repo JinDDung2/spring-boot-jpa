@@ -51,15 +51,31 @@ class UserRestControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 중복 테스트")
-    void addAndDuplicate() throws Exception {
+    void 아이디_단건_조회_실패() throws Exception {
+        Long id = 10L;
+        given(userService.findById(id)).willReturn(UserResDto.builder()
+                .id(id)
+                .username("homidle")
+                .message("해당 id의 유저가 없습니다.")
+                .build());
+
+        String url = String.format("/api/v1/articles/%d", id);
+        mockMvc.perform(get(url))
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.username").value("homidle"))
+                .andExpect(jsonPath("$.message").value("해당 id의 유저가 없습니다."))
+                .andDo(print());
+    }
+
+    @Test
+    void 회원가입_중복_테스트() throws Exception {
         UserReqDto userReqDto = new UserReqDto("jin", "1234");
 
         given(userService.add(any(UserReqDto.class))).willReturn(new UserResDto(userReqDto.getUsername(), "해당 username은 중복입니다."));
 
         mockMvc.perform(post("/api/v1/articles")
-                .content(objectMapper.writeValueAsBytes(userReqDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsBytes(userReqDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("jin"))
                 .andExpect(jsonPath("$.message").value("해당 username은 중복입니다."))
@@ -68,15 +84,14 @@ class UserRestControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 테스트")
-    void add() throws Exception {
+    void 회원가입_테스트() throws Exception {
         UserReqDto userReqDto = new UserReqDto("homidle", "1234");
 
         given(userService.add(any(UserReqDto.class))).willReturn(new UserResDto(userReqDto.getUsername(), "회원가입이 완료되었습니다."));
 
         mockMvc.perform(post("/api/v1/articles")
-                .content(objectMapper.writeValueAsBytes(userReqDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsBytes(userReqDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("homidle"))
                 .andExpect(jsonPath("$.message").value("회원가입이 완료되었습니다."))
